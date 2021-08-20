@@ -1,162 +1,81 @@
-let myLibrary = [];
+function removeActiveStyle(buttons) {
+  buttons.forEach((button) => {
+    button.classList.remove('active');
+  });
+}
 
-class Book {
-  constructor(title, author, pages, status) {
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.status = status;
+function generateGrid(divNum = 20 * 20, className = 'grid-20x20') {
+  const gridContainer = document.querySelector('.grid-container');
+  gridContainer.innerHTML = '';
+  for (let i = 0; i < divNum; i += 1) {
+    const gridDiv = document.createElement('div');
+    gridContainer.classList.remove('grid-10x10', 'grid-20x20', 'grid-30x30');
+    gridContainer.classList.add(className);
+    gridContainer.appendChild(gridDiv);
   }
 }
 
-// GET BOOKS FROM LOCAL STORAGE
-if (localStorage.getItem('books') === null) {
-  myLibrary = [];
-} else {
-  const booksFromStorage = JSON.parse(localStorage.getItem('books'));
-  myLibrary = booksFromStorage;
+function chooseGrid() {
+  const colorButtons = document.querySelectorAll('.rectangle');
+  const gridButtons = document.querySelectorAll('.circle');
+  gridButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      removeActiveStyle(colorButtons);
+      removeActiveStyle(gridButtons);
+      if (button.classList.contains('grid-10')) {
+        gridButtons[0].classList.add('active');
+        generateGrid(10 * 10, 'grid-10x10');
+      } else if (button.classList.contains('grid-20')) {
+        gridButtons[1].classList.add('active');
+        generateGrid();
+      } else if (button.classList.contains('grid-30')) {
+        gridButtons[2].classList.add('active');
+        generateGrid(30 * 30, 'grid-30x30');
+      }
+    });
+  });
 }
 
-function showLibraryInfo() {
-  const booksRead = document.querySelector('#books-read');
-  const booksUnread = document.querySelector('#books-unread');
-  const totalBooks = document.querySelector('#total-books');
-  let readCounter = 0;
-  let unreadCounter = 0;
-  booksRead.textContent = 0;
-  booksUnread.textContent = 0;
-  for (let i = 0; i < myLibrary.length; i += 1) {
-    if (myLibrary[i].status === true) {
-      readCounter += 1;
-      booksRead.textContent = readCounter;
-    } else if (myLibrary[i].status === false) {
-      unreadCounter += 1;
-      booksUnread.textContent = unreadCounter;
-    }
-  }
-  totalBooks.textContent = myLibrary.length;
-}
-
-function showBooksInLibrary() {
-  // SAVE TO LOCAL STORAGE
-  localStorage.setItem('books', JSON.stringify(myLibrary));
-  showLibraryInfo();
-  const bookList = document.querySelector('#table-body');
-  bookList.textContent = '';
-  for (let i = 0; i < myLibrary.length; i += 1) {
-    const bookRow = document.createElement('tr');
-    bookRow.classList.add('book-info');
-    bookList.appendChild(bookRow);
-    // BOOK TITLE
-    const bookTitle = document.createElement('td');
-    bookTitle.textContent = myLibrary[i].title;
-    bookRow.appendChild(bookTitle);
-    // BOOK AUTHOR
-    const bookAuthor = document.createElement('td');
-    bookAuthor.textContent = myLibrary[i].author;
-    bookRow.appendChild(bookAuthor);
-    // BOOK PAGES
-    const bookPages = document.createElement('td');
-    bookPages.textContent = myLibrary[i].pages;
-    bookRow.appendChild(bookPages);
-    // BOOK STATUS BUTTON
-    const bookStatus = document.createElement('td');
-    const statusSymbol = document.createElement('i');
-    if (myLibrary[i].status === false) {
-      statusSymbol.classList.add('fas', 'fa-times');
-    } else {
-      statusSymbol.classList.add('fas', 'fa-check');
-    }
-    bookStatus.appendChild(statusSymbol);
-    bookRow.appendChild(bookStatus);
-    // BOOK REMOVAL BUTTON
-    const bookDelete = document.createElement('td');
-    const deleteSymbol = document.createElement('i');
-    deleteSymbol.classList.add('fas', 'fa-trash-alt');
-    bookDelete.appendChild(deleteSymbol);
-    bookRow.appendChild(bookDelete);
-  }
-}
-
-function addBookToLibrary(title, author, pages, status) {
-  const book = new Book(title, author, pages, status);
-  myLibrary.push(book);
-  showBooksInLibrary();
-}
-
-// FORM VALIDATION
-function validateForm(event) {
-  event.preventDefault();
-  const form = document.querySelector('form');
-  const titleInput = document.querySelector('#title');
-  const titleErr = document.querySelector('.title');
-  const nameInput = document.querySelector('#name');
-  const nameErr = document.querySelector('.name');
-  const numberInput = document.querySelector('#number');
-  const numberErr = document.querySelector('.number');
-  const checkbox = document.querySelector('input[name="checkbox"]');
-  if (titleInput.value === '') {
-    titleErr.style.display = 'block';
-  } else {
-    titleErr.style.display = 'none';
-  }
-  if (nameInput.value === '') {
-    nameErr.style.display = 'block';
-  } else {
-    nameErr.style.display = 'none';
-  }
-  if (numberInput.value === '' || numberInput.value.match(/[^1-9]/) || numberInput.value <= 0) {
-    numberErr.style.display = 'block';
-  } else {
-    numberErr.style.display = 'none';
-  }
-  if (titleInput.value !== '' && nameInput.value !== '' && numberInput.value !== '' && numberInput.value > 0) {
-    if (checkbox.checked) {
-      addBookToLibrary(titleInput.value, nameInput.value, numberInput.value, true);
-    } else {
-      addBookToLibrary(titleInput.value, nameInput.value, numberInput.value, false);
-    }
-    form.reset();
-  }
-}
-
-// MODAL FOR BOOKS REMOVAL
-function manipulateModal() {
-  const modal = document.querySelector('#modal');
-  modal.style.display = 'block';
-  modal.addEventListener('click', (event) => {
-    const { target } = event;
-    if (target.classList.contains('close')) {
-      modal.style.display = 'none';
-    } else if (target.classList.contains('confirm-removal')) {
-      myLibrary = [];
-      modal.style.display = 'none';
+function generateColor(name, colors) {
+  const gridItem = document.querySelectorAll('.grid-container > div');
+  gridItem.forEach((item) => {
+    if (name === 'warm' || name === 'cold') {
+      const randomColors = colors[Math.floor(
+        Math.random() * colors.length,
+      )];
+      item.addEventListener('mouseenter', (e) => {
+        e.target.style.backgroundColor = randomColors;
+      });
+    } else if (name === 'black' || name === 'white') {
+      item.addEventListener('mouseenter', (e) => {
+        e.target.style.backgroundColor = colors;
+      });
     }
   });
 }
 
-function listenClicks() {
-  document.addEventListener('click', (event) => {
-    const { target } = event;
-    const tr = target.parentNode.parentNode.rowIndex - 1;
-    if (target.id === 'add-book') {
-      validateForm(event);
-    } else if (target.id === 'delete-all-btn') {
-      manipulateModal();
-    } else if (target.classList.contains('fa-trash-alt')) {
-      myLibrary.splice(tr, 1);
-    } else if (target.classList.contains('fa-check')) {
-      target.classList.remove('fa-check');
-      target.classList.add('fa-times');
-      myLibrary[tr].status = false;
-    } else if (target.classList.contains('fa-times')) {
-      target.classList.remove('fa-times');
-      target.classList.add('fa-check');
-      myLibrary[tr].status = true;
-    }
-    showBooksInLibrary();
+function chooseColor() {
+  const colorButtons = document.querySelectorAll('.rectangle');
+  colorButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      removeActiveStyle(colorButtons);
+      if (button.classList.contains('warm')) {
+        colorButtons[0].classList.add('active');
+        generateColor('warm', ['#BF6A6D', '#A45256', '#EC6760', '#F88C5D', '#FDCF6D']);
+      } else if (button.classList.contains('cold')) {
+        colorButtons[1].classList.add('active');
+        generateColor('cold', ['#5590BC', '#0DABB8', '#01F0F6', '#1FFDE1', '#57FFC8']);
+      } else if (button.classList.contains('black')) {
+        colorButtons[2].classList.add('active');
+        generateColor('black', '#000000');
+      } else if (button.classList.contains('white')) {
+        colorButtons[3].classList.add('active');
+        generateColor('white', '#FFFFFF');
+      }
+    });
   });
 }
 
-showBooksInLibrary();
-listenClicks();
+chooseGrid();
+generateGrid();
+chooseColor();

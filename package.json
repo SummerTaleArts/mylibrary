@@ -1,24 +1,24 @@
 {
-  "name": "library",
+  "name": "etch-a-sketch-toy",
   "version": "1.0.0",
-  "description": "A small Library app, created with **HTML**, **CSS** and **JavaScript**. The data is stored in **localStorage**.",
+  "description": "A browser version of drawing toy similar to Etch A Sketch.",
   "main": "scripts.js",
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mooniiDev/library.git"
+    "url": "git+https://github.com/mooniiDev/etch-a-sketch-toy.git"
   },
-  "author": "mooniiDev",
+  "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/mooniiDev/library/issues"
+    "url": "https://github.com/mooniiDev/etch-a-sketch-toy/issues"
   },
-  "homepage": "https://github.com/mooniiDev/library#readme",
-  "devDependencies": {
-    "eslint": "^7.26.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.23.2"
-  }
+  "homepage": "https://github.com/mooniiDev/etch-a-sketch-toy#readme"
 }
